@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class SensorControllerTest {
 
   @Autowired
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   private MockMvc mockMvc;
 
   @Test
