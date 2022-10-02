@@ -26,6 +26,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
+#include <curl/curl.h>
 #include <fcntl.h>
 // Raspberry 3B+ platform's default I2C device file
 #define IIC_Dev "/dev/i2c-1"
@@ -91,11 +92,15 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
     // Wait before next measureent
     dev->delay_ms(5000);
   }
+
   return rslt;
 }
 
 int main(int argc, char *argv[])
 {
+  CURL *curl;
+  curl_global_init(CURL_GLOBAL_ALL);
+
   struct bme280_dev dev;
   int8_t rslt = BME280_OK;
 
@@ -104,11 +109,13 @@ int main(int argc, char *argv[])
     printf("Failed to open the i2c bus %s", argv[1]);
     exit(1);
   }
+
   if (ioctl(fd, I2C_SLAVE, 0x77) < 0)
   {
-    printf("Failed to acquire bus access and/or talk to slave.\n");
+    printf("Failed to acquire i2c bus access or talk to slave.\n");
     exit(1);
   }
+
   // dev.dev_id = BME280_I2C_ADDR_PRIM;//0x76
   dev.dev_id = BME280_I2C_ADDR_SEC; // 0x77
   dev.intf = BME280_I2C_INTF;
@@ -117,6 +124,11 @@ int main(int argc, char *argv[])
   dev.delay_ms = user_delay_ms;
 
   rslt = bme280_init(&dev);
-  printf("BME280 Init Result is: %d \n", rslt);
+  printf("Sensor initialization result is: %d \n", rslt);
+
   stream_sensor_data_forced_mode(&dev);
+
+  printf("Exiting...\n")
+  curl_global_cleanup();
+  return 0;
 }
