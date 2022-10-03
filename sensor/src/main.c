@@ -21,6 +21,7 @@
 // When it is 1 means use I2C interface, When it is 0,use SPI interface
 #define USEIIC 1
 
+#include <signal.h>
 #include <string.h>
 #include <stdlib.h>
 #include <linux/i2c-dev.h>
@@ -31,6 +32,7 @@
 // Raspberry 3B+ platform's default I2C device file
 #define IIC_Dev "/dev/i2c-1"
 
+volatile sig_atomic_t done = 0;
 int fd;
 
 void user_delay_ms(uint32_t period)
@@ -59,8 +61,8 @@ int8_t user_i2c_write(uint8_t id, uint8_t reg_addr, uint8_t *data, uint16_t len)
 void print_sensor_data(struct bme280_data *comp_data)
 {
   printf(
-      "temperature: %0.2f*C   pressure: %0.2fhPa   humidity: %0.2f%%\n",
-      comp_data->temperature,
+      "temperature: %0.2f*F   pressure: %0.2fhPa   humidity: %0.2f%%\n",
+      comp_data->temperature * 9.0 / 5.0 + 32,
       comp_data->pressure / 100,
       comp_data->humidity);
 }
@@ -82,7 +84,7 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
   rslt = bme280_set_sensor_settings(settings_sel, dev);
 
   /* Continuously stream sensor data */
-  while (1)
+  while (!done)
   {
     rslt = bme280_set_sensor_mode(BME280_FORCED_MODE, dev);
     /* Wait for the measurement to complete and print data @25Hz */
@@ -96,8 +98,20 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
   return rslt;
 }
 
+void termination_handler(int signum)
+{
+  done = 1;
+}
+
 int main(int argc, char *argv[])
 {
+  struct sigaction action;
+  action.sa_handler = termination_handler;
+  sigemptyset(&action.sa_mask);
+  sigaction(SIGINT, &action, NULL);
+  sigaction(SIGHUP, &action, NULL);
+  sigaction(SIGTERM, &action, NULL);
+
   CURL *curl;
   curl_global_init(CURL_GLOBAL_ALL);
 
@@ -128,7 +142,8 @@ int main(int argc, char *argv[])
 
   stream_sensor_data_forced_mode(&dev);
 
-  printf("Exiting...\n")
+  printf("\nCleaning up... ");
   curl_global_cleanup();
+  printf("Exiting.\n");
   return 0;
 }
