@@ -46,14 +46,14 @@
  */
 
 /*! @file bme280.c
-    @brief Sensor driver for BME280 sensor */
+		@brief Sensor driver for BME280 sensor */
 #include "bme280.h"
 
 /**\name Internal macros */
 /* To identify osr settings selected by user */
-#define OVERSAMPLING_SETTINGS		UINT8_C(0x07)
+#define OVERSAMPLING_SETTINGS UINT8_C(0x07)
 /* To identify filter and standby settings selected by user */
-#define FILTER_STANDBY_SETTINGS		UINT8_C(0x18)
+#define FILTER_STANDBY_SETTINGS UINT8_C(0x18)
 
 /*!
  * @brief This internal API puts the device to sleep mode.
@@ -141,7 +141,7 @@ static void parse_humidity_calib_data(const uint8_t *reg_data, struct bme280_dev
  * @retval Compensated pressure data in double.
  */
 static double compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data);
+																	const struct bme280_calib_data *calib_data);
 
 /*!
  * @brief This internal API is used to compensate the raw humidity data and
@@ -154,7 +154,7 @@ static double compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
  * @retval Compensated humidity data in double.
  */
 static double compensate_humidity(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data);
+																	const struct bme280_calib_data *calib_data);
 
 /*!
  * @brief This internal API is used to compensate the raw temperature data and
@@ -166,8 +166,8 @@ static double compensate_humidity(const struct bme280_uncomp_data *uncomp_data,
  * @return Compensated temperature data.
  * @retval Compensated temperature data in double.
  */
-static  double compensate_temperature(const struct bme280_uncomp_data *uncomp_data,
-						struct bme280_calib_data *calib_data);
+static double compensate_temperature(const struct bme280_uncomp_data *uncomp_data,
+																		 struct bme280_calib_data *calib_data);
 
 #else
 
@@ -182,7 +182,7 @@ static  double compensate_temperature(const struct bme280_uncomp_data *uncomp_da
  * @retval Compensated temperature data in integer.
  */
 static int32_t compensate_temperature(const struct bme280_uncomp_data *uncomp_data,
-						struct bme280_calib_data *calib_data);
+																			struct bme280_calib_data *calib_data);
 
 /*!
  * @brief This internal API is used to compensate the raw pressure data and
@@ -195,7 +195,7 @@ static int32_t compensate_temperature(const struct bme280_uncomp_data *uncomp_da
  * @retval Compensated pressure data in integer.
  */
 static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data);
+																		const struct bme280_calib_data *calib_data);
 
 /*!
  * @brief This internal API is used to compensate the raw humidity data and
@@ -208,7 +208,7 @@ static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data
  * @retval Compensated humidity data in integer.
  */
 static uint32_t compensate_humidity(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data);
+																		const struct bme280_calib_data *calib_data);
 
 #endif
 
@@ -249,7 +249,7 @@ static int8_t set_osr_humidity_settings(const struct bme280_settings *settings, 
  * @retval zero -> Success / +ve value -> Warning / -ve value -> Error
  */
 static int8_t set_osr_settings(uint8_t desired_settings, const struct bme280_settings *settings,
-				const struct bme280_dev *dev);
+															 const struct bme280_dev *dev);
 
 /*!
  * @brief This API sets the pressure and/or temperature oversampling settings
@@ -263,7 +263,7 @@ static int8_t set_osr_settings(uint8_t desired_settings, const struct bme280_set
  * @retval zero -> Success / +ve value -> Warning / -ve value -> Error
  */
 static int8_t set_osr_press_temp_settings(uint8_t desired_settings, const struct bme280_settings *settings,
-						const struct bme280_dev *dev);
+																					const struct bme280_dev *dev);
 
 /*!
  * @brief This internal API fills the pressure oversampling settings provided by
@@ -297,7 +297,7 @@ static void fill_osr_temp_settings(uint8_t *reg_data, const struct bme280_settin
  * @retval zero -> Success / +ve value -> Warning / -ve value -> Error
  */
 static int8_t set_filter_standby_settings(uint8_t desired_settings, const struct bme280_settings *settings,
-						const struct bme280_dev *dev);
+																					const struct bme280_dev *dev);
 
 /*!
  * @brief This internal API fills the filter settings provided by the user
@@ -358,16 +358,20 @@ int8_t bme280_init(struct bme280_dev *dev)
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 	/* Proceed if null check is fine */
-	if (rslt ==  BME280_OK) {
-		while (try_count) {
+	if (rslt == BME280_OK)
+	{
+		while (try_count)
+		{
 			/* Read the chip-id of bme280 sensor */
 			rslt = bme280_get_regs(BME280_CHIP_ID_ADDR, &chip_id, 1, dev);
 			/* Check for chip id validity */
-			if ((rslt == BME280_OK) && (chip_id == BME280_CHIP_ID)) {
+			if ((rslt == BME280_OK) && (chip_id == BME280_CHIP_ID))
+			{
 				dev->chip_id = chip_id;
 				/* Reset the sensor */
 				rslt = bme280_soft_reset(dev);
-				if (rslt == BME280_OK) {
+				if (rslt == BME280_OK)
+				{
 					/* Read the calibration data */
 					rslt = get_calib_data(dev);
 				}
@@ -395,7 +399,8 @@ int8_t bme280_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, const 
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 	/* Proceed if null check is fine */
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		/* If interface selected is SPI */
 		if (dev->intf != BME280_I2C_INTF)
 			reg_addr = reg_addr | 0x80;
@@ -427,34 +432,43 @@ int8_t bme280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint8_t len, 
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 	/* Check for arguments validity */
-	if ((rslt ==  BME280_OK) && (reg_addr != NULL) && (reg_data != NULL)) {
-		if (len != 0) {
+	if ((rslt == BME280_OK) && (reg_addr != NULL) && (reg_data != NULL))
+	{
+		if (len != 0)
+		{
 			temp_buff[0] = reg_data[0];
 			/* If interface selected is SPI */
-			if (dev->intf != BME280_I2C_INTF) {
+			if (dev->intf != BME280_I2C_INTF)
+			{
 				for (reg_addr_cnt = 0; reg_addr_cnt < len; reg_addr_cnt++)
 					reg_addr[reg_addr_cnt] = reg_addr[reg_addr_cnt] & 0x7F;
 			}
 			/* Burst write mode */
-			if (len > 1) {
+			if (len > 1)
+			{
 				/* Interleave register address w.r.t data for
 				burst write*/
 				interleave_reg_addr(reg_addr, temp_buff, reg_data, len);
 				temp_len = ((len * 2) - 1);
-			} else {
+			}
+			else
+			{
 				temp_len = len;
 			}
 			rslt = dev->write(dev->dev_id, reg_addr[0], temp_buff, temp_len);
 			/* Check for communication error */
 			if (rslt != BME280_OK)
 				rslt = BME280_E_COMM_FAIL;
-		} else {
+		}
+		else
+		{
 			rslt = BME280_E_INVALID_LEN;
 		}
-	} else {
+	}
+	else
+	{
 		rslt = BME280_E_NULL_PTR;
 	}
-
 
 	return rslt;
 }
@@ -471,17 +485,19 @@ int8_t bme280_set_sensor_settings(uint8_t desired_settings, const struct bme280_
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 	/* Proceed if null check is fine */
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		rslt = bme280_get_sensor_mode(&sensor_mode, dev);
 		if ((rslt == BME280_OK) && (sensor_mode != BME280_SLEEP_MODE))
 			rslt = put_device_to_sleep(dev);
-		if (rslt == BME280_OK) {
+		if (rslt == BME280_OK)
+		{
 			/* Check if user wants to change oversampling
-			   settings */
+				 settings */
 			if (are_settings_changed(OVERSAMPLING_SETTINGS, desired_settings))
 				rslt = set_osr_settings(desired_settings, &dev->settings, dev);
 			/* Check if user wants to change filter and/or
-			   standby settings */
+				 standby settings */
 			if ((rslt == BME280_OK) && are_settings_changed(FILTER_STANDBY_SETTINGS, desired_settings))
 				rslt = set_filter_standby_settings(desired_settings, &dev->settings, dev);
 		}
@@ -502,7 +518,8 @@ int8_t bme280_get_sensor_settings(struct bme280_dev *dev)
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 	/* Proceed if null check is fine */
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		rslt = bme280_get_regs(BME280_CTRL_HUM_ADDR, reg_data, 4, dev);
 		if (rslt == BME280_OK)
 			parse_device_settings(reg_data, &dev->settings);
@@ -522,10 +539,11 @@ int8_t bme280_set_sensor_mode(uint8_t sensor_mode, const struct bme280_dev *dev)
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		rslt = bme280_get_sensor_mode(&last_set_mode, dev);
 		/* If the sensor is not in sleep mode put the device to sleep
-		   mode */
+			 mode */
 		if ((rslt == BME280_OK) && (last_set_mode != BME280_SLEEP_MODE))
 			rslt = put_device_to_sleep(dev);
 		/* Set the power mode */
@@ -546,7 +564,8 @@ int8_t bme280_get_sensor_mode(uint8_t *sensor_mode, const struct bme280_dev *dev
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		/* Read the power mode register */
 		rslt = bme280_get_regs(BME280_PWR_CTRL_ADDR, sensor_mode, 1, dev);
 		/* Assign the power mode in the device structure */
@@ -569,7 +588,8 @@ int8_t bme280_soft_reset(const struct bme280_dev *dev)
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 	/* Proceed if null check is fine */
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		/* Write the soft reset command in the sensor */
 		rslt = bme280_set_regs(&reg_addr, &soft_rst_cmd, 1, dev);
 		/* As per data sheet, startup time is 2 ms. */
@@ -595,18 +615,22 @@ int8_t bme280_get_sensor_data(uint8_t sensor_comp, struct bme280_data *comp_data
 	/* Check for null pointer in the device structure*/
 	rslt = null_ptr_check(dev);
 
-	if ((rslt == BME280_OK) && (comp_data != NULL)) {
+	if ((rslt == BME280_OK) && (comp_data != NULL))
+	{
 		/* Read the pressure and temperature data from the sensor */
 		rslt = bme280_get_regs(BME280_DATA_ADDR, reg_data, BME280_P_T_H_DATA_LEN, dev);
 
-		if (rslt == BME280_OK) {
+		if (rslt == BME280_OK)
+		{
 			/* Parse the read data from the sensor */
 			bme280_parse_sensor_data(reg_data, &uncomp_data);
 			/* Compensate the pressure and/or temperature and/or
-			   humidity data from the sensor */
+				 humidity data from the sensor */
 			rslt = bme280_compensate_data(sensor_comp, &uncomp_data, comp_data, &dev->calib_data);
 		}
-	} else {
+	}
+	else
+	{
 		rslt = BME280_E_NULL_PTR;
 	}
 
@@ -642,36 +666,41 @@ void bme280_parse_sensor_data(const uint8_t *reg_data, struct bme280_uncomp_data
 	uncomp_data->humidity = data_msb | data_lsb;
 }
 
-
 /*!
  * @brief This API is used to compensate the pressure and/or
  * temperature and/or humidity data according to the component selected
  * by the user.
  */
 int8_t bme280_compensate_data(uint8_t sensor_comp, const struct bme280_uncomp_data *uncomp_data,
-				     struct bme280_data *comp_data, struct bme280_calib_data *calib_data)
+															struct bme280_data *comp_data, struct bme280_calib_data *calib_data)
 {
 	int8_t rslt = BME280_OK;
 
-	if ((uncomp_data != NULL) && (comp_data != NULL) && (calib_data != NULL)) {
+	if ((uncomp_data != NULL) && (comp_data != NULL) && (calib_data != NULL))
+	{
 		/* Initialize to zero */
 		comp_data->temperature = 0;
 		comp_data->pressure = 0;
 		comp_data->humidity = 0;
 		/* If pressure or temperature component is selected */
-		if (sensor_comp & (BME280_PRESS | BME280_TEMP | BME280_HUM)) {
+		if (sensor_comp & (BME280_PRESS | BME280_TEMP | BME280_HUM))
+		{
 			/* Compensate the temperature data */
 			comp_data->temperature = compensate_temperature(uncomp_data, calib_data);
 		}
-		if (sensor_comp & BME280_PRESS) {
+		if (sensor_comp & BME280_PRESS)
+		{
 			/* Compensate the pressure data */
 			comp_data->pressure = compensate_pressure(uncomp_data, calib_data);
 		}
-		if (sensor_comp & BME280_HUM) {
+		if (sensor_comp & BME280_HUM)
+		{
 			/* Compensate the humidity data */
 			comp_data->humidity = compensate_humidity(uncomp_data, calib_data);
 		}
-	} else {
+	}
+	else
+	{
 		rslt = BME280_E_NULL_PTR;
 	}
 
@@ -683,7 +712,7 @@ int8_t bme280_compensate_data(uint8_t sensor_comp, const struct bme280_uncomp_da
  * temperature and humidity in the sensor.
  */
 static int8_t set_osr_settings(uint8_t desired_settings, const struct bme280_settings *settings,
-				const struct bme280_dev *dev)
+															 const struct bme280_dev *dev)
 {
 	int8_t rslt = BME280_W_INVALID_OSR_MACRO;
 
@@ -709,8 +738,9 @@ static int8_t set_osr_humidity_settings(const struct bme280_settings *settings, 
 	/* Write the humidity control value in the register */
 	rslt = bme280_set_regs(&reg_addr, &ctrl_hum, 1, dev);
 	/* Humidity related changes will be only effective after a
-	   write operation to ctrl_meas register */
-	if (rslt == BME280_OK) {
+		 write operation to ctrl_meas register */
+	if (rslt == BME280_OK)
+	{
 		reg_addr = BME280_CTRL_MEAS_ADDR;
 		rslt = bme280_get_regs(reg_addr, &ctrl_meas, 1, dev);
 		if (rslt == BME280_OK)
@@ -725,7 +755,7 @@ static int8_t set_osr_humidity_settings(const struct bme280_settings *settings, 
  * in the sensor according to the settings selected by the user.
  */
 static int8_t set_osr_press_temp_settings(uint8_t desired_settings, const struct bme280_settings *settings,
-						const struct bme280_dev *dev)
+																					const struct bme280_dev *dev)
 {
 	int8_t rslt;
 	uint8_t reg_addr = BME280_CTRL_MEAS_ADDR;
@@ -733,7 +763,8 @@ static int8_t set_osr_press_temp_settings(uint8_t desired_settings, const struct
 
 	rslt = bme280_get_regs(reg_addr, &reg_data, 1, dev);
 
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		if (desired_settings & BME280_OSR_PRESS_SEL)
 			fill_osr_press_settings(&reg_data, settings);
 		if (desired_settings & BME280_OSR_TEMP_SEL)
@@ -750,7 +781,7 @@ static int8_t set_osr_press_temp_settings(uint8_t desired_settings, const struct
  * in the sensor according to the settings selected by the user.
  */
 static int8_t set_filter_standby_settings(uint8_t desired_settings, const struct bme280_settings *settings,
-						const struct bme280_dev *dev)
+																					const struct bme280_dev *dev)
 {
 	int8_t rslt;
 	uint8_t reg_addr = BME280_CONFIG_ADDR;
@@ -758,7 +789,8 @@ static int8_t set_filter_standby_settings(uint8_t desired_settings, const struct
 
 	rslt = bme280_get_regs(reg_addr, &reg_data, 1, dev);
 
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		if (desired_settings & BME280_FILTER_SEL)
 			fill_filter_settings(&reg_data, settings);
 		if (desired_settings & BME280_STANDBY_SEL)
@@ -832,7 +864,8 @@ static int8_t write_power_mode(uint8_t sensor_mode, const struct bme280_dev *dev
 	/* Read the power mode register */
 	rslt = bme280_get_regs(reg_addr, &sensor_mode_reg_val, 1, dev);
 	/* Set the power mode */
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		sensor_mode_reg_val = BME280_SET_BITS_POS_0(sensor_mode_reg_val, BME280_SENSOR_MODE, sensor_mode);
 		/* Write the power mode in the register */
 		rslt = bme280_set_regs(&reg_addr, &sensor_mode_reg_val, 1, dev);
@@ -851,7 +884,8 @@ static int8_t put_device_to_sleep(const struct bme280_dev *dev)
 	struct bme280_settings settings;
 
 	rslt = bme280_get_regs(BME280_CTRL_HUM_ADDR, reg_data, 4, dev);
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		parse_device_settings(reg_data, &settings);
 		rslt = bme280_soft_reset(dev);
 		if (rslt == BME280_OK)
@@ -882,7 +916,7 @@ static int8_t reload_device_settings(const struct bme280_settings *settings, con
  * return the compensated temperature data in double data type.
  */
 static double compensate_temperature(const struct bme280_uncomp_data *uncomp_data,
-						struct bme280_calib_data *calib_data)
+																		 struct bme280_calib_data *calib_data)
 {
 	double var1;
 	double var2;
@@ -910,7 +944,7 @@ static double compensate_temperature(const struct bme280_uncomp_data *uncomp_dat
  * return the compensated pressure data in double data type.
  */
 static double compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data)
+																	const struct bme280_calib_data *calib_data)
 {
 	double var1;
 	double var2;
@@ -927,8 +961,9 @@ static double compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
 	var1 = (var3 + ((double)calib_data->dig_P2) * var1) / 524288.0;
 	var1 = (1.0 + var1 / 32768.0) * ((double)calib_data->dig_P1);
 	/* avoid exception caused by division by zero */
-	if (var1) {
-		pressure = 1048576.0 - (double) uncomp_data->pressure;
+	if (var1)
+	{
+		pressure = 1048576.0 - (double)uncomp_data->pressure;
 		pressure = (pressure - (var2 / 4096.0)) * 6250.0 / var1;
 		var1 = ((double)calib_data->dig_P9) * pressure * pressure / 2147483648.0;
 		var2 = pressure * ((double)calib_data->dig_P8) / 32768.0;
@@ -938,7 +973,9 @@ static double compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
 			pressure = pressure_min;
 		else if (pressure > pressure_max)
 			pressure = pressure_max;
-	} else { /* Invalid case */
+	}
+	else
+	{ /* Invalid case */
 		pressure = pressure_min;
 	}
 
@@ -950,7 +987,7 @@ static double compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
  * return the compensated humidity data in double data type.
  */
 static double compensate_humidity(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data)
+																	const struct bme280_calib_data *calib_data)
 {
 	double humidity;
 	double humidity_min = 0.0;
@@ -985,7 +1022,7 @@ static double compensate_humidity(const struct bme280_uncomp_data *uncomp_data,
  * return the compensated temperature data in integer data type.
  */
 static int32_t compensate_temperature(const struct bme280_uncomp_data *uncomp_data,
-						struct bme280_calib_data *calib_data)
+																			struct bme280_calib_data *calib_data)
 {
 	int32_t var1;
 	int32_t var2;
@@ -1014,7 +1051,7 @@ static int32_t compensate_temperature(const struct bme280_uncomp_data *uncomp_da
  * accuracy.
  */
 static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data)
+																		const struct bme280_calib_data *calib_data)
 {
 	int64_t var1;
 	int64_t var2;
@@ -1033,7 +1070,8 @@ static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data
 	var1 = (var3 + var1) * ((int64_t)calib_data->dig_P1) / 8589934592;
 
 	/* To avoid divide by zero exception */
-	if (var1 != 0) {
+	if (var1 != 0)
+	{
 		var4 = 1048576 - uncomp_data->pressure;
 		var4 = (((var4 * 2147483648) - var2) * 3125) / var1;
 		var1 = (((int64_t)calib_data->dig_P9) * (var4 / 8192) * (var4 / 8192)) / 33554432;
@@ -1045,7 +1083,9 @@ static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data
 			pressure = pressure_min;
 		else if (pressure > pressure_max)
 			pressure = pressure_max;
-	} else {
+	}
+	else
+	{
 		pressure = pressure_min;
 	}
 
@@ -1057,7 +1097,7 @@ static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data
  * return the compensated pressure data in integer data type.
  */
 static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data)
+																		const struct bme280_calib_data *calib_data)
 {
 	int32_t var1;
 	int32_t var2;
@@ -1076,8 +1116,9 @@ static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data
 	var4 = (((int32_t)calib_data->dig_P2) * var1) / 2;
 	var1 = (var3 + var4) / 262144;
 	var1 = (((32768 + var1)) * ((int32_t)calib_data->dig_P1)) / 32768;
-	 /* avoid exception caused by division by zero */
-	if (var1) {
+	/* avoid exception caused by division by zero */
+	if (var1)
+	{
 		var5 = (uint32_t)((uint32_t)1048576) - uncomp_data->pressure;
 		pressure = ((uint32_t)(var5 - (uint32_t)(var2 / 4096))) * 3125;
 		if (pressure < 0x80000000)
@@ -1093,7 +1134,9 @@ static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data
 			pressure = pressure_min;
 		else if (pressure > pressure_max)
 			pressure = pressure_max;
-	} else {
+	}
+	else
+	{
 		pressure = pressure_min;
 	}
 
@@ -1106,7 +1149,7 @@ static uint32_t compensate_pressure(const struct bme280_uncomp_data *uncomp_data
  * return the compensated humidity data in integer data type.
  */
 static uint32_t compensate_humidity(const struct bme280_uncomp_data *uncomp_data,
-						const struct bme280_calib_data *calib_data)
+																		const struct bme280_calib_data *calib_data)
 {
 	int32_t var1;
 	int32_t var2;
@@ -1153,17 +1196,19 @@ static int8_t get_calib_data(struct bme280_dev *dev)
 	/* Read the calibration data from the sensor */
 	rslt = bme280_get_regs(reg_addr, calib_data, BME280_TEMP_PRESS_CALIB_DATA_LEN, dev);
 
-	if (rslt == BME280_OK) {
+	if (rslt == BME280_OK)
+	{
 		/* Parse temperature and pressure calibration data and store
-		   it in device structure */
+			 it in device structure */
 		parse_temp_press_calib_data(calib_data, dev);
 
 		reg_addr = BME280_HUMIDITY_CALIB_DATA_ADDR;
 		/* Read the humidity calibration data from the sensor */
 		rslt = bme280_get_regs(reg_addr, calib_data, BME280_HUMIDITY_CALIB_DATA_LEN, dev);
-		if (rslt == BME280_OK) {
+		if (rslt == BME280_OK)
+		{
 			/* Parse humidity calibration data and store it in
-			   device structure */
+				 device structure */
 			parse_humidity_calib_data(calib_data, dev);
 		}
 	}
@@ -1179,7 +1224,8 @@ static void interleave_reg_addr(const uint8_t *reg_addr, uint8_t *temp_buff, con
 {
 	uint8_t index;
 
-	for (index = 1; index < len; index++) {
+	for (index = 1; index < len; index++)
+	{
 		temp_buff[(index * 2) - 1] = reg_addr[index];
 		temp_buff[index * 2] = reg_data[index];
 	}
@@ -1206,7 +1252,6 @@ static void parse_temp_press_calib_data(const uint8_t *reg_data, struct bme280_d
 	calib_data->dig_P8 = (int16_t)BME280_CONCAT_BYTES(reg_data[21], reg_data[20]);
 	calib_data->dig_P9 = (int16_t)BME280_CONCAT_BYTES(reg_data[23], reg_data[22]);
 	calib_data->dig_H1 = reg_data[25];
-
 }
 
 /*!
@@ -1242,10 +1287,13 @@ static uint8_t are_settings_changed(uint8_t sub_settings, uint8_t desired_settin
 {
 	uint8_t settings_changed = FALSE;
 
-	if (sub_settings & desired_settings) {
+	if (sub_settings & desired_settings)
+	{
 		/* User wants to modify this particular settings */
 		settings_changed = TRUE;
-	} else {
+	}
+	else
+	{
 		/* User don't want to modify this particular settings */
 		settings_changed = FALSE;
 	}
@@ -1261,10 +1309,13 @@ static int8_t null_ptr_check(const struct bme280_dev *dev)
 {
 	int8_t rslt;
 
-	if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL) || (dev->delay_ms == NULL)) {
+	if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL) || (dev->delay_ms == NULL))
+	{
 		/* Device structure pointer is not valid */
 		rslt = BME280_E_NULL_PTR;
-	} else {
+	}
+	else
+	{
 		/* Device structure is fine */
 		rslt = BME280_OK;
 	}
