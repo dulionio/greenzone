@@ -1,4 +1,8 @@
+set(EXECUTABLE_NAME "verte")
+
 find_package(CURL REQUIRED)
-add_executable(verte src/bme280.c src/main.c)
+
+add_subdirectory(src)
 include_directories(SYSTEM ${CURL_INCLUDE_DIR})
-target_link_libraries(verte ${CURL_LIBRARIES})
+target_include_directories(${EXECUTABLE_NAME} PRIVATE src)
+target_link_libraries(${EXECUTABLE_NAME} ${CURL_LIBRARIES})
