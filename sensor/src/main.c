@@ -45,25 +45,44 @@ int8_t user_i2c_write(uint8_t id, uint8_t reg_addr, uint8_t *data, uint16_t len)
 
 void send_data(CURL *curl, struct bme280_data *data)
 {
+    time_t now;
+    char date_time[sizeof "1970-01-01T00:00:00Z" + 1];
+    char *json_fmt;
+    ssize_t json_size;
+    char *json_buf;
     int8_t rslt;
-    struct curl_slist *list = NULL;
+    struct curl_slist *header = NULL;
 
     printf("temperature: %0.2f*F   pressure: %0.2fhPa   humidity: %0.2f%%\n",
-           data->temperature * 9.0 / 5.0 + 32,
-           data->pressure / 100,
+           data->temperature * 9.0 / 5.0 + 32.0,
+           data->pressure / 100.0,
            data->humidity);
 
-    list = curl_slist_append(list, "Content-Type: application/json");
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "name=daniel&project=curl");
+    json_fmt = "{"
+               "\"sensorId\" : \"519801e6-bac1-46bf-8687-f9631a2e6b0c\","
+               "\"dateTime\" : \"%s\","
+               "\"temperature\" : %5.1f,"
+               "\"humidity\" : %5.1f,"
+               "\"pressure\" : %6.1f"
+               "}";
 
+    time(&now);
+    strftime(date_time, sizeof date_time, "%FT%TZ", gmtime(&now));
+    json_size = 1 + snprintf(NULL, 0, json_fmt, &date_time, data->temperature, data->pressure, data->humidity);
+    json_buf = malloc(json_size);
+    snprintf(json_buf, json_size, json_fmt, &date_time, data->temperature, data->pressure, data->humidity);
+
+    header = curl_slist_append(header, "Content-Type: application/json");
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_buf);
     rslt = curl_easy_perform(curl);
     if (rslt != BME280_OK)
     {
         fprintf(stderr, "Failed to send sensor data to server: %d.\n", rslt);
     }
 
-    curl_slist_free_all(list); /* free the list */
+    curl_slist_free_all(header); /* free the list */
+    free(json_buf);
 }
 
 void start_stream(CURL *curl, struct bme280_dev *dev)
@@ -147,7 +166,7 @@ void start_device(CURL *curl)
     start_stream(curl, &dev);
 }
 
-void start_curl()
+void start_curl(char *url)
 {
     CURL *curl;
     curl_global_init(CURL_GLOBAL_ALL);
@@ -160,7 +179,7 @@ void start_curl()
 
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
-    curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8080/readings");
+    curl_easy_setopt(curl, CURLOPT_URL, url);
 
     start_device(curl);
     curl_global_cleanup();
@@ -171,8 +190,38 @@ void termination_handler(int signum)
     done = 1;
 }
 
+void show_help()
+{
+    fprintf(stderr, "Usage: verte <url>\n");
+    exit(1);
+}
+
 int main(int argc, char *argv[])
 {
+    int opt;
+    char *url;
+
+    while ((opt = getopt(argc, argv, "h")) != -1)
+    {
+        switch (opt)
+        {
+        case 'h':
+        default:
+            show_help();
+        }
+    }
+
+    if (argc - optind != 1)
+    {
+        show_help();
+    }
+
+    url = argv[optind];
+    if (url[strlen(url) - 1] == '/')
+    {
+        url[strlen(url) - 1] = 0;
+    }
+
     struct sigaction ignore;
     ignore.sa_handler = SIG_IGN;
     sigemptyset(&ignore.sa_mask);
@@ -184,7 +233,7 @@ int main(int argc, char *argv[])
     sigaction(SIGINT, &action, NULL);
     sigaction(SIGTERM, &action, NULL);
 
-    start_curl();
+    start_curl(url);
 
     printf(" Done.\n");
     return 0;
