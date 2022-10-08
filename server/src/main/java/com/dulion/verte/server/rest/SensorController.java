@@ -2,11 +2,10 @@ package com.dulion.verte.server.rest;
 
 import com.dulion.verte.server.data.Reading;
 import com.dulion.verte.server.data.ReadingRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,30 +19,26 @@ public class SensorController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SensorController.class);
 
-    private final ObjectMapper mapper;
-
     private final ReadingRepository readings;
 
-    @Autowired
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SensorController(ObjectMapper mapper, ReadingRepository readings) {
-        this.mapper = mapper;
+    public SensorController(ReadingRepository readings) {
         this.readings = readings;
     }
 
     @GetMapping
     public Iterable<Reading> getReadings() {
-        return readings.findAll();
+        List<Reading> all = new ArrayList<>();
+        readings.findAll().forEach(all::add);
+        return all;
     }
 
     @PostMapping
     public ResponseEntity<Void> postReading(@RequestBody Reading value) {
-        try {
-            readings.save(value);
-            LOG.info(mapper.writeValueAsString(value));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // Ignore attempts to pass reading ID when posting.
+        value.setId(null);
+        // TODO 1. Verify registered sensor, 2. Compare to prior value
+        readings.save(value);
         return ResponseEntity.ok().build();
     }
 }

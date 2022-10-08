@@ -10,6 +10,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SensorControllerTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SensorControllerTest.class);
 
     @Autowired
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -33,21 +37,26 @@ public class SensorControllerTest {
 
     @Test
     public void whenPost() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"sensorId\":\"");
-        sb.append(UUID.randomUUID().toString());
-        sb.append("\",\"dateTime\":\"");
-        sb.append(ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT));
-        sb.append("\",\"temperature\":");
-        sb.append("24.3");
-        sb.append(",\"humidity\":");
-        sb.append("74.4");
-        sb.append(",\"pressure\":");
-        sb.append("1000.4");
-        sb.append("}");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        String json = ("{'sensorId':'"
+            + UUID.randomUUID()
+            + "','dateTime':'"
+            + ZonedDateTime.now(ZoneOffset.UTC).format(formatter)
+            + "','temperature':"
+            + "24.3"
+            + ",'humidity':"
+            + "74.4"
+            + ",'pressure':"
+            + "1000.4"
+            + "}").replace('\'', '"');
+        LOG.info(json);
         mockMvc.perform(post("/api/readings")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}".replace('\'', '"')))
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isOk());
+        // And get
+        mockMvc.perform(get("/api/readings"))
             .andDo(print())
             .andExpect(status().isOk());
     }
