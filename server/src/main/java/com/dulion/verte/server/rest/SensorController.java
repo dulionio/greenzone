@@ -1,13 +1,9 @@
 package com.dulion.verte.server.rest;
 
 import com.dulion.verte.server.data.Reading;
+import com.dulion.verte.server.data.ReadingRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,42 +22,24 @@ public class SensorController {
 
     private final ObjectMapper mapper;
 
+    private final ReadingRepository readings;
+
     @Autowired
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SensorController(ObjectMapper mapper) {
+    public SensorController(ObjectMapper mapper, ReadingRepository readings) {
         this.mapper = mapper;
+        this.readings = readings;
     }
 
     @GetMapping
-    public List<Reading> getReadings() {
-        List<Reading> readings = new ArrayList<>();
-        readings.add(
-            new Reading(
-                UUID.randomUUID(),
-                Instant.parse("2022-01-01T12:00:00Z"),
-                new BigDecimal("73.1"),
-                new BigDecimal("50.0"),
-                new BigDecimal("1000.1")));
-        readings.add(
-            new Reading(
-                UUID.randomUUID(),
-                Instant.parse("2022-01-02T12:00:00Z"),
-                new BigDecimal("74.1"),
-                new BigDecimal("60.0"),
-                new BigDecimal("1015.1")));
-        readings.add(
-            new Reading(
-                UUID.randomUUID(),
-                Instant.parse("2022-01-03T12:00:00Z"),
-                new BigDecimal("75.1"),
-                new BigDecimal("70.0"),
-                new BigDecimal("1025.1")));
-        return readings;
+    public Iterable<Reading> getReadings() {
+        return readings.findAll();
     }
 
     @PostMapping
     public ResponseEntity<Void> postReading(@RequestBody Reading value) {
         try {
+            readings.save(value);
             LOG.info(mapper.writeValueAsString(value));
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().build();
