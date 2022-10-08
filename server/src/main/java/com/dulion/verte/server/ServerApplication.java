@@ -17,6 +17,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.time.Instant;
+
 @SpringBootApplication
 @EnableWebMvc
 @EnableSwagger2
@@ -36,8 +38,8 @@ public class ServerApplication {
         handlerAdapter
             .getMessageConverters()
             .stream()
-            .filter(c -> c instanceof MappingJackson2HttpMessageConverter)
-            .map(c -> (MappingJackson2HttpMessageConverter) c)
+            .filter(MappingJackson2HttpMessageConverter.class::isInstance)
+            .map(MappingJackson2HttpMessageConverter.class::cast)
             .forEach(c -> c.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
     }
 
