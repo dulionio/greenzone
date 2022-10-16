@@ -1,12 +1,10 @@
 import * as React from 'react';
-import {Container, Grid, Text} from "@mantine/core";
+import {Container, Grid, Paper, Text} from "@mantine/core";
 
-function Content() {
+export default function Content() {
     return (
-        <Container>
+        <Paper>
             <Text>Content</Text>
-        </Container>
+        </Paper>
     )
 }
-
-export default Content;
