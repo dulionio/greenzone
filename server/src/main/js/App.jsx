@@ -18,19 +18,12 @@ export default function App() {
         <AppShell
           navbarOffsetBreakpoint="sm"
           navbar={
-            <Navbar p="sm" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 47, lg: 300 }}>
+            <Navbar p="sm" hiddenBreakpoint="sm" hidden={!opened} width={{ base: 64 }}>
               <SiteNavbar />
             </Navbar>
           }
           header={
-            <Header p="sm" height={47} >
-              <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-                <Burger
-                  opened={opened}
-                  onClick={() => setOpened((opened) => !opened)}
-                  size="sm"
-                  mr="xl" />
-              </MediaQuery>
+            <Header p="sm" height={47}>
               <SiteHeader />
             </Header>
           }>
