@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState } from 'react';
 import { MantineProvider, AppShell, Navbar, Header, ColorSchemeProvider, MediaQuery, Burger } from '@mantine/core';
 
 import SiteHeader from './components/SiteHeader';
@@ -7,8 +6,8 @@ import SiteNavbar from './components/SiteNavbar';
 import Content from "./views/Content";
 
 export default function App() {
-  const [colorScheme, setColorScheme] = useState('light');
-  const [opened, setOpened] = useState(false);
+  const [colorScheme, setColorScheme] = React.useState('light');
+  const [opened, setOpened] = React.useState(false);
   const toggleColorScheme = (value) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 

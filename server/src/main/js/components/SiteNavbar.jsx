@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { useState } from 'react';
 import {
   IconHome2,
   IconUser,
+  IconGauge,
   IconPlug,
   IconTemperature,
   IconCalendarTime,
-  IconChartInfographic,
 } from '@tabler/icons';
 import {
   createStyles,
@@ -18,7 +17,7 @@ import {
 
 const navData = [
   { icon: IconHome2, label: 'Home' },
-  { icon: IconChartInfographic, label: 'Dashboard' },
+  { icon: IconGauge, label: 'Dashboard' },
   { icon: IconCalendarTime, label: 'Schedule' },
   { icon: IconTemperature, label: 'Sensors' },
   { icon: IconPlug, label: 'Controllers' },
@@ -60,7 +59,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }) {
 }
 
 export default function SiteNavbar() {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = React.useState(0);
   const links = navData.map((link, index) => (
     <NavbarLink
       {...link}
