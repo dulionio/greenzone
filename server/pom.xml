@@ -38,6 +38,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Web -->
+        <dependency>
+            <groupId>com.dulion.greenzone</groupId>
+            <artifactId>server</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- REST -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
