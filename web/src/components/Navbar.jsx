@@ -27,7 +27,7 @@ const Navbar = ({darkMode, onModeClick}) => {
       </div>
       <div className="navbar-end">
         <button className="btn btn-ghost btn-circle" onClick={onModeClick}>
-          <span class="material-symbols-outlined">{darkMode ? "light_mode" : "dark_mode"}</span>
+          <span className="material-symbols-outlined">{darkMode ? "light_mode" : "dark_mode"}</span>
         </button>
       </div>
     </div>
