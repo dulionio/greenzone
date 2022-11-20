@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 const Navbar = ({darkMode, onModeClick}) => {
   return (
     <div className="navbar bg-base-100">
@@ -9,20 +11,23 @@ const Navbar = ({darkMode, onModeClick}) => {
             </svg>
           </label>
           <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-            <li><a href="/">Dashboard</a></li>
-            <li><a href="/settings">Settings</a></li>
-            <li><a href="/sensors">Sensors</a></li>
-            <li><a href="/devices">Devices</a></li>
+            <li><NavLink to="/" >Dashboard</NavLink></li>
+            <li><NavLink to="/settings">Settings</NavLink></li>
+            <li><NavLink to="/sensors">Sensors</NavLink></li>
+            <li><NavLink to="/devices">Devices</NavLink></li>
           </ul>
         </div>
-        <button className="btn btn-ghost normal-case text-xl">GreenZone</button>
+        <button className="btn btn-ghost normal-case text-xl">
+          <span class="material-symbols-outlined">spa</span>
+          <span className="ml-1">GreenZone</span>
+        </button>
       </div>
       <div className="navbar-center hidden md:flex">
-        <ul className="menu menu-horizontal p-0">
-          <li><a href="/">Dashboard</a></li>
-          <li><a href="/settings">Settings</a></li>
-          <li><a href="/sensors">Sensors</a></li>
-          <li><a href="/devices">Devices</a></li>
+        <ul className="menu menu-horizontal rounded-box bg-base-100 p-2">
+          <li><NavLink to="/" >Dashboard</NavLink></li>
+          <li><NavLink to="/settings">Settings</NavLink></li>
+          <li><NavLink to="/sensors">Sensors</NavLink></li>
+          <li><NavLink to="/devices">Devices</NavLink></li>
         </ul>
       </div>
       <div className="navbar-end">
