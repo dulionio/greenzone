@@ -1,4 +1,4 @@
-const Navbar = () => {
+const Navbar = ({darkMode, onModeClick}) => {
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -26,6 +26,9 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
+        <button className="btn btn-ghost btn-circle" onClick={onModeClick}>
+          <span class="material-symbols-outlined">{darkMode ? "light_mode" : "dark_mode"}</span>
+        </button>
       </div>
     </div>
   );

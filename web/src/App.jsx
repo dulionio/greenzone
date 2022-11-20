@@ -13,7 +13,7 @@ const Layout = () => {
   return (
     <div className="h-screen" data-theme={darkMode ? "forest" : "garden"}>
       <div className="flex flex-col md:flex-row">
-        <Navbar />
+        <Navbar darkMode={darkMode} onModeClick={() => setDarkMode(!darkMode)} />
       </div>
       <Outlet />
     </div>
