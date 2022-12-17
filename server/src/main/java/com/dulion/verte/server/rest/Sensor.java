@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/sensor")
 public class Sensor {
 
     private static final Logger LOG = LoggerFactory.getLogger(Sensor.class);

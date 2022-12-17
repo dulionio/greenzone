@@ -8,14 +8,11 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>server</artifactId>
+    <artifactId>web</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>server</name>
-    <description>Greenhouse Server</description>
 
-    <properties>
-        <java.version>11</java.version>
-    </properties>
+    <name>greenzone-web</name>
+    <description>Greenhouse Web Site</description>
 
     <build>
         <plugins>
