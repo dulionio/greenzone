@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="g">
+      <feGaussianBlur stdDeviation="2.86724"/>
+    </filter>
+    <linearGradient id="f" x1="63.892" x2="45.804" y1="76.333" y2="28.39" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, 1, 0, -1)">
+      <stop stop-color="#56ce1d" offset="0"/>
+      <stop stop-color="#43a117" offset="0.1459"/>
+      <stop stop-color="#317512" offset="0.471"/>
+      <stop stop-color="#61b236" offset="0.75"/>
+      <stop stop-color="#c6e178" offset="1"/>
+    </linearGradient>
+    <linearGradient id="e" x1="11.319" x2="27.716" y1="94.609" y2="8.7476" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, 1, 0, -1)">
+      <stop stop-color="#e6fbdc" offset="0"/>
+      <stop stop-color="#43a117" offset="0.1859"/>
+      <stop stop-color="#081502" offset="0.471"/>
+      <stop stop-color="#61b236" offset="0.75"/>
+      <stop stop-color="#d9efc7" offset="1"/>
+    </linearGradient>
+    <linearGradient id="d" x1="81.616" x2="57.251" y1="91.775" y2="53.76" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, 1, 0, -1)">
+      <stop stop-color="#9ac823" offset="0"/>
+      <stop stop-color="#378513" stop-opacity=".81356" offset="0.3278"/>
+      <stop stop-color="#429f17" offset="0.5578"/>
+      <stop stop-color="#58ca1c" offset="0.8126"/>
+      <stop stop-color="#c6d675" offset="1"/>
+    </linearGradient>
+    <linearGradient id="c" x1="10.185" x2="109.84" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, 1, 0, -1)">
+      <stop stop-color="#9ac823" offset="0"/>
+      <stop stop-color="#378513" offset="0.2882"/>
+      <stop stop-color="#3f9717" stop-opacity=".87797" offset="0.8566"/>
+      <stop stop-color="#58ca1c" offset="0.9536"/>
+      <stop stop-color="#c6d675" offset="1"/>
+    </linearGradient>
+    <linearGradient id="b" x1="114.71" x2="80.868" y1="5.8248" y2="43.839" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, 1, 0, -1)">
+      <stop stop-color="#e3e15b" offset="0"/>
+      <stop stop-color="#57c021" offset="0.2398"/>
+      <stop stop-color="#325c0f" offset="1"/>
+    </linearGradient>
+    <linearGradient id="a" x1="24.886" x2="104.17" y1="91.664" y2="-.5" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, 1, 0, -1)">
+      <stop stop-color="#82b61e" stop-opacity=".98824" offset="0"/>
+      <stop stop-color="#3e7522" offset="0.2703"/>
+      <stop stop-color="#4a842c" offset="0.4054"/>
+      <stop stop-color="#376521" offset="0.9209"/>
+      <stop stop-color="#eef4c9" stop-opacity=".84746" offset="1"/>
+    </linearGradient>
+  </defs>
+  <path d="M 105.77 27.204 C 120.966 63.801 94.924 89.254 51.201 98.941 C 40.132 101.538 26.149 96.617 19.624 105.379 C 15.99 109.055 12.132 111.416 12.573 116.722" fill="none" filter="url(#g)" stroke="#000" stroke-width="2"/>
+  <path d="M 104.5 24.344 C 94.127 28.593 76.275 45.884 48.125 59.688 C 27.505 70.646 3.806 70.7 10.742 102.915 L 11.998 117.965 C 14.007 110.37 20.829 98.282 32.5 98.032 C 55.288 96.386 83.286 92.056 100.25 71.97 C 110.993 58.001 112.071 36.065 104.219 24.751 C 104.305 24.632 104.412 24.466 104.5 24.345 L 104.5 24.344 Z" fill="url(#d)" fill-rule="evenodd" stroke="url(#c)"/>
+  <path d="M 71.844 13.156 C 58.412 12.994 42.78 18.355 22.063 36.406 C -7.823 67.291 5.614 112.093 12.268 118.269 L 11.356 111.191 C 7.258 79.055 25.866 72.99 48.125 59.687 C 83.714 42.235 96.73 29.924 101.406 19.406 C 101.12 19.654 100.854 19.91 100.562 20.156 C 91.426 16.754 82.29 13.282 71.843 13.156 L 71.844 13.156 Z" fill="url(#f)" fill-rule="evenodd" stroke="url(#e)"/>
+  <path d="M 112.51 1.146 C 112.608 7.569 107.405 13.437 101.511 20.064 C 87.804 38.733 50.178 57.545 22.072 76.256 C 15.131 81.899 7.228 96.544 12.262 117.336 C 7.361 90.335 16.807 81.628 22.035 76.578 C 43.361 58.681 68.678 56.232 104.233 23.833 C 110.912 16.71 113.774 8.551 116.802 6.665 C 118.266 0.234 114.861 1.473 112.51 1.147 L 112.51 1.146 Z" fill="url(#b)" fill-rule="evenodd" stroke="url(#a)"/>
+</svg>
