@@ -4,7 +4,7 @@ import Layout from './compontents/Layout';
 import Dashboard from './pages/Dashboard';
 import Sensors from './pages/Sensors';
 import Devices from './pages/Devices';
-import History from './pages/History';
+import Events from './pages/Events';
 
 const App = () => {
   return (
@@ -13,7 +13,7 @@ const App = () => {
         <Route index element={<Dashboard />} />
         <Route path="sensors" element={<Sensors />} />
         <Route path="devices" element={<Devices />} />
-        <Route path="history" element={<History />} />
+        <Route path="events" element={<Events />} />
       </Route>
     </Routes>
   );

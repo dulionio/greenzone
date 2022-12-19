@@ -4,10 +4,5 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   darkMode: 'class',
-  daisyui: {
-    themes: ["garden", "forest"],
-  },
-  plugins: [
-    require("daisyui")
-  ],
+  plugins: [],
 }
