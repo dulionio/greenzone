@@ -40,7 +40,7 @@ public class SensorControllerTest {
 
     @Test
     public void whenGetList() throws Exception {
-        mockMvc.perform(get("/api/readings"))
+        mockMvc.perform(get("/api/sensor/readings"))
             .andDo(print())
             .andExpect(status().isOk());
     }
@@ -58,13 +58,13 @@ public class SensorControllerTest {
             .replace('\'', '"');
         LOG.info(json);
 
-        mockMvc.perform(post("/api/readings")
+        mockMvc.perform(post("/api/sensor/readings")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
             .andDo(print())
             .andExpect(status().isOk());
 
-        String content = mockMvc.perform(get("/api/readings"))
+        String content = mockMvc.perform(get("/api/sensor/readings"))
             .andDo(print())
             .andExpect(status().isOk())
             .andReturn()
